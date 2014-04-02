@@ -4,16 +4,17 @@
 package com.ca;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
 
 import com.unboundid.ldap.sdk.Entry;
 import com.unboundid.ldif.LDIFException;
 import com.unboundid.ldif.LDIFReader;
+import com.unboundid.util.Base64;
 
 /**
  * @author modsr01
@@ -47,8 +48,8 @@ public class LDIFParse {
 					if (entry.getAttribute("userPassword") != null && entry.getAttribute("userPassword").getValue().contains("{SHA}") && entry.getAttribute("uid") != null && entry.getAttribute("orgId") != null) {
 						caDirModel = new CADirModel();
 						String userPassword = entry.getAttribute("userPassword").getValue();
-						byte[] decoded = Base64.decodeBase64(userPassword.substring(5).getBytes());
-						caDirModel.setUser_password(new String(Hex.encodeHex(new String(decoded, "UTF-8").getBytes())));
+						byte[] decoded = Base64.decode(userPassword.substring(5));
+						caDirModel.setUser_password(new String(Hex.encodeHex(decoded)));
 						caDirModel.setUid(entry.getAttribute("uid").getValue());
 						caDirModel.setOrg_id(entry.getAttribute("orgId").getValue());
 						cadirModelList.add(caDirModel);
@@ -73,6 +74,9 @@ public class LDIFParse {
 					logger.error(ioException);
 					errorsEncountered++;
 					break;
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 			ldifReader.close();

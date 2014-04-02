@@ -220,6 +220,9 @@ public class DB {
 		Connection conn = db.getConnection();
 		try {
 			File[] listOfFiles = loadFiles();
+			if (listOfFiles.length <= 0) {
+				logger.info("No SQL files found ... ");
+			}
 			for (int i = 0; i < listOfFiles.length; i++) {
 				if (listOfFiles[i].isFile() && listOfFiles[i].getName().contains(".sql")  && !listOfFiles[i].getName().contains("completed")) {
 					try {
