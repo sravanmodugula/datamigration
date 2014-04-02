@@ -159,11 +159,9 @@ public class DB {
 		int matching_records = 0;
 
 		Set<String> uniques = new HashSet<String>();
-		for (Iterator<CADirModel> caiter = cadirModelList.iterator(); caiter
-				.hasNext();) {
+		for (Iterator<CADirModel> caiter = cadirModelList.iterator(); caiter.hasNext();) {
 			CADirModel dirModel = caiter.next();
-			for (Iterator<NSDModel> nsditer = nsdModelList.iterator(); nsditer
-					.hasNext();) {
+			for (Iterator<NSDModel> nsditer = nsdModelList.iterator(); nsditer.hasNext();) {
 				NSDModel nsdModel = nsditer.next();
 				if (nsdModel.getExternal_user_id().equals(dirModel.getUid())) {
 					pwdModel = new PwdModel();
@@ -226,13 +224,12 @@ public class DB {
 			for (int i = 0; i < listOfFiles.length; i++) {
 				if (listOfFiles[i].isFile() && listOfFiles[i].getName().contains(".sql")  && !listOfFiles[i].getName().contains("completed")) {
 					try {
-						System.out.println(listOfFiles[i].getName());
+						logger.info("Processing file name: "+listOfFiles[i].getName());
 						statement = conn.createStatement();
 						List<String> lines = Files.readAllLines(Paths.get("./tenatslist_mod_passwd/"+listOfFiles[i].getName()), Charset.defaultCharset());
-						System.out.println(lines.size());
+						logger.info("Processing records: "+lines.size());
 						for (String updateSQL : lines) {
 							statement.executeUpdate(updateSQL);
-							System.out.println(updateSQL);
 						}
 						file = new File("./tenatslist_mod_passwd/"+listOfFiles[i].getName());
 						newfile = new File("./tenatslist_mod_passwd/"+listOfFiles[i].getName()+".completed");
